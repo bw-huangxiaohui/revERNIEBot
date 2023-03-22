@@ -93,20 +93,20 @@ pip3 install --upgrade revERNIEBot
 5. 代码调用
 
 ```python
-from revERNIEBot import selenium  # 目前仅支持Selenium的方案
+from revERNIEBot.selenium import ChatBot  # 目前仅支持Selenium的方案
 
-chatbot = selenium.ChatBot(
+chatbot = ChatBot(
     cookieFile="cookies.json"
     browsermobProxyPath="pathToBrowserMobProxyExecFile",  # browsermob-proxy的可执行文件路径，详见下方说明
     chromeDriverPath="pathToChromeDriver"  # ChromeDriver的路径，详见下方说明
 )
 
-print(bot.ask("你好"))  # 获取回复
-print(bot.ask("你是谁？"))
+print(chatbot.ask("你好"))  # 获取回复
+print(chatbot.ask("你是谁？"))
 
-bot.reset_session()  # 开启新对话
+chatbot.reset_session()  # 开启新对话
 
-bot.quit()
+chatbot.quit()
 ```
 
 - `browsermobProxyPath`：填写刚刚下载的browsermobproxy的压缩包解压出来的`bin/`中的可执行文件路径，例如Linux系统下填写`bin`中的`browsermob-proxy`的路径，Windows填写`browsermob-proxy.bat`路径（Windows系统下需要将路径使用\\分隔）
