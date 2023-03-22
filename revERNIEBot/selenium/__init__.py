@@ -85,6 +85,13 @@ class ChatBot:
             cookie['sameSite'] = 'None'
             self.driver.add_cookie(cookie)
 
+        self.driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
+        "source": """
+            Object.defineProperty(navigator, 'webdriver', {
+            get: () => undefined
+            })
+        """
+        })
         # 进入主页
         self.driver.get("https://yiyan.baidu.com")
     
