@@ -110,7 +110,7 @@ class ChatBot:
     def __new_session__(self):
         """创建新的会话"""
         # 点击class为MO979HM2的元素
-        WebDriverWait(self.driver, timeout=10).until(lambda d: d.find_element(By.CLASS_NAME, "MO979HM2"))
+        WebDriverWait(self.driver, timeout=10).until(lambda d: d.find_element(By.CLASS_NAME, "MO979HM2")).click()
         
     
     def reset_session(self):
