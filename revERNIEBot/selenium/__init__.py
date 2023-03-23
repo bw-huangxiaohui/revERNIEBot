@@ -122,8 +122,12 @@ class ChatBot:
         self.proxy.new_har("yiyan", {"captureHeaders": False, "captureContent": True})
         # 输入消息
         input_area = WebDriverWait(self.driver, timeout=10).until(lambda d: d.find_element(By.CLASS_NAME, 'wBs12eIN'))
-        input_area.send_keys(text)
-        # input_area.send_keys(Keys.ENTER)
+
+        for word in text:
+            time.sleep(0.1)
+            input_area.send_keys(word)
+
+        time.sleep(0.8)
 
         enter_button = WebDriverWait(self.driver, timeout=10).until(lambda d: d.find_element(By.CSS_SELECTOR, "#root > div > div.N_eugr4S > div > div.qyxOCbmP > div.xgTDL7D_ > div.oeNDrlEA > div.bUwIGATa > div:nth-child(3) > span.pa6BxUpp > svg > g > g:nth-child(1)"))
         # 等待enter_button的opacity属性大于0.9
