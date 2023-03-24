@@ -18,7 +18,8 @@ classifiers = [
 ]
 dependencies = [
   "browsermob-proxy",
-  "selenium"
+  "selenium",
+  "undetected-chromedriver"
 ]
 
 [project.urls]

@@ -1,5 +1,7 @@
 import logging
 
+import undetected_chromedriver as uc
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -8,6 +10,7 @@ from browsermobproxy import Server, Client
 
 import time
 import json
+import logging
 
 class ChatBot:
     """ChatBot对象提供用于与接口交互的各种方法"""
@@ -46,7 +49,7 @@ class ChatBot:
 
     def __login__(self, cookies, browsermobProxyPath, chromeDriverPath, headless):
         """登录"""
-
+        logging.debug("starting login: browsermobProxyPath={}, chromeDriverPath={}, headless={}".format(browsermobProxyPath, chromeDriverPath, headless))
         # 启动browsermobproxy
         self.server = Server(path=browsermobProxyPath)
         self.server.start()
@@ -54,29 +57,30 @@ class ChatBot:
 
         # 启动Chrome
         options = webdriver.ChromeOptions()
-        if headless:
-            options.add_argument('--headless')
-        options.add_argument('--incognito')
         options.add_argument('--ignore-certificate-errors')
-        options.add_argument('--no-sandbox')  # 解决DevToolsActivePort文件不存在的报错
-        options.add_argument('window-size=1920x1080')
+        options.add_argument("--proxy-server={0}".format(self.proxy.proxy))
+        # ["--no-sandbox", "--disable-setuid-sandbox"]
         options.add_argument('--disable-gpu')  # 谷歌文档提到需要加上这个属性来规避bug
-        options.add_argument('--hide-scrollbars')  # 隐藏滚动条, 应对一些特殊页面
+        options.add_argument("--window-size=800,600")
+
         options.add_argument('blink-settings=imagesEnabled=false')  # 不加载图片,提升速度
         options.add_argument("--disable-dev-shm-usage")
-        options.add_argument('log-level=3')
-        options.add_argument("--proxy-server={0}".format(self.proxy.proxy))
+        
+        logging.debug("browsermob-proxy: {}".format(self.proxy.proxy))
 
         if chromeDriverPath != "":
-            self.driver = webdriver.Chrome(
+            self.driver = uc.Chrome(
                 executable_path=chromeDriverPath,
+                headless=headless,
                 options=options
             )
         else:
-            self.driver = webdriver.Chrome(
+            self.driver = uc.Chrome(
+                headless=headless,
                 options=options
             )
 
+        logging.debug("successfully started Chrome")
 
         # 添加cookies
         self.driver.delete_all_cookies()
@@ -94,6 +98,8 @@ class ChatBot:
         })
         # 进入主页
         self.driver.get("https://yiyan.baidu.com")
+
+        logging.debug("successfully logged in")
     
     def quit(self):
         """退出"""
@@ -121,6 +127,8 @@ class ChatBot:
         """向机器人发送消息"""
         self.proxy.new_har("yiyan", {"captureHeaders": False, "captureContent": True})
         # 输入消息
+
+        logging.debug("sending message: {}".format(text))
         input_area = WebDriverWait(self.driver, timeout=10).until(lambda d: d.find_element(By.CLASS_NAME, 'wBs12eIN'))
 
         for word in text:
@@ -129,6 +137,7 @@ class ChatBot:
 
         time.sleep(0.8)
 
+        logging.debug("clicking enter button")
         enter_button = WebDriverWait(self.driver, timeout=10).until(lambda d: d.find_element(By.CSS_SELECTOR, "#root > div > div.N_eugr4S > div > div.qyxOCbmP > div.xgTDL7D_ > div.oeNDrlEA > div.bUwIGATa > div:nth-child(3) > span.pa6BxUpp > svg > g > g:nth-child(1)"))
         # 等待enter_button的opacity属性大于0.9
         WebDriverWait(self.driver, timeout=timeout).until(lambda d: float(enter_button.value_of_css_property("opacity")) > 0.9)
@@ -169,6 +178,7 @@ class ChatBot:
                             if resp_json['data']['is_end'] == 1 or resp_json['data']['is_end'] == "1":
                                 done = True
                                 break
+            logging.debug(reply)
             if done:
                 break
 
