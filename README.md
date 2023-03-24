@@ -54,7 +54,7 @@ yum install https://dl.google.com/linux/direct/google-chrome-stable_current_x86_
 ```
 
 </details>
-
+<!-- 
 ### 下载ChromeDriver
 
 <details>
@@ -64,7 +64,7 @@ yum install https://dl.google.com/linux/direct/google-chrome-stable_current_x86_
 
 找到对应你Chrome版本号的目录，根据系统下载其中的文件，解压到任意目录
 
-</details>
+</details> -->
 
 ### 下载browsermob-proxy
 
@@ -98,7 +98,6 @@ from revERNIEBot.selenium import ChatBot  # 目前仅支持Selenium的方案
 chatbot = ChatBot(
     cookieFile="cookies.json"
     browsermobProxyPath="pathToBrowserMobProxyExecFile",  # browsermob-proxy的可执行文件路径，详见下方说明
-    chromeDriverPath="pathToChromeDriver"  # ChromeDriver的路径，详见下方说明
 )
 
 print(chatbot.ask("你好"))  # 获取回复
@@ -111,8 +110,6 @@ chatbot.quit()
 
 - `browsermobProxyPath`：填写刚刚下载的browsermobproxy的压缩包解压出来的`bin/`中的可执行文件路径，例如Linux系统下填写`bin`中的`browsermob-proxy`的路径，Windows填写`browsermob-proxy.bat`路径（Windows系统下需要将路径使用\\分隔）
 - 系统上的java版本不能高于java8
-- `chromeDriverPath`：填写刚刚下载解压的`ChromeDriver`的可执行文件路径
-
 
 ## 注意
 
