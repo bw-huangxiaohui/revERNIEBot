@@ -31,7 +31,6 @@ class ChatBot:
         cookieFile: str="",
         cookies: list = None,
         browsermobProxyPath: str="",
-        chromeDriverPath: str="",
         headless: bool=True,
     ):
         """创建ChatBot对象"""
@@ -45,11 +44,11 @@ class ChatBot:
             with open(cookieFile, "r") as f:
                 cookies = json.load(f)
 
-        self.__login__(cookies, browsermobProxyPath, chromeDriverPath, headless)
+        self.__login__(cookies, browsermobProxyPath, headless)
 
-    def __login__(self, cookies, browsermobProxyPath, chromeDriverPath, headless):
+    def __login__(self, cookies, browsermobProxyPath, headless):
         """登录"""
-        logging.debug("starting login: browsermobProxyPath={}, chromeDriverPath={}, headless={}".format(browsermobProxyPath, chromeDriverPath, headless))
+        logging.debug("starting login: browsermobProxyPath={}, headless={}".format(browsermobProxyPath, headless))
         # 启动browsermobproxy
         self.server = Server(path=browsermobProxyPath)
         self.server.start()
@@ -65,20 +64,13 @@ class ChatBot:
 
         options.add_argument('blink-settings=imagesEnabled=false')  # 不加载图片,提升速度
         options.add_argument("--disable-dev-shm-usage")
-        
+
         logging.debug("browsermob-proxy: {}".format(self.proxy.proxy))
 
-        if chromeDriverPath != "":
-            self.driver = uc.Chrome(
-                executable_path=chromeDriverPath,
-                headless=headless,
-                options=options
-            )
-        else:
-            self.driver = uc.Chrome(
-                headless=headless,
-                options=options
-            )
+        self.driver = uc.Chrome(
+            headless=headless,
+            options=options
+        )
 
         logging.debug("successfully started Chrome")
 
